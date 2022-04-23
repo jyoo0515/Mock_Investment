@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      token:
+      token: ec9dd607-ca57-480c-ab36-49fc12f6e8be
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
