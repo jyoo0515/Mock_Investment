@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  nginx_proxy:
+    depends_on:
+      - server
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: "on-failure"
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./client/build:/usr/share/nginx/html
+    environment:
+      - TZ=Asia/Seoul
+
+  server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: server
+    restart: "on-failure"
+    expose:
+      - 5000
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - TZ=Asia/Seoul
+    stdin_open: true
+    tty: true
