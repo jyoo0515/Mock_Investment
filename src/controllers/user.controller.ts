@@ -32,14 +32,14 @@ export const checkUnique = async (req: Request, res: Response) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { username, password, firstName, lastName } = req.body;
+  const { username, password, name } = req.body;
   if (User.checkUnique(username)) {
     try {
       const user = new User();
       user.username = username;
       user.password = password;
-      user.firstName = firstName;
-      user.lastName = lastName;
+      user.name = name;
+      user.balance = 1000; // initial balance
 
       const savedUser = await User.save(user);
       return res.status(201).json(savedUser.destruct());
@@ -96,11 +96,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const username = req.user.username;
-  const { firstName, lastName } = req.body;
+  const { name } = req.body;
   try {
     const user = await User.findOneBy({ username });
-    user.firstName = firstName;
-    user.lastName = lastName;
+    user.name = name;
     await User.upsert(user, ['username']);
     return res.json({ message: 'Successfully updated' });
   } catch (err) {
