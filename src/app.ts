@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import cors, { CorsOptions } from 'cors';
 
 import userRoutes from './routes/user.route';
+import stockRoutes from './routes/stock.route';
+import updateStock from './util/update-stock';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +27,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/stocks', stockRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
@@ -40,6 +43,7 @@ if (process.env.NODE_ENV !== 'test') {
       console.log('Database initialized');
       app.listen(PORT, () => {
         console.log(`Server listening on ${PORT}`);
+        // updateStock();
       });
     })
     .catch((error) => console.log(error));
