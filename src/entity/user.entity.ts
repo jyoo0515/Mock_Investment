@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, BeforeInsert, BeforeUpdate, ManyToMany, JoinTable } from 'typeorm';
 import bcrypt from 'bcrypt';
+import Stock from './stock.entity';
 
 @Entity('users')
 class User extends BaseEntity {
@@ -13,10 +14,14 @@ class User extends BaseEntity {
   password: string;
 
   @Column()
-  firstName: string;
+  name: string;
 
   @Column()
-  lastName: string;
+  balance: number;
+
+  @ManyToMany(() => Stock)
+  @JoinTable()
+  stocks: Stock[];
 
   static async checkUnique(username: string): Promise<boolean> {
     try {
@@ -49,8 +54,9 @@ class User extends BaseEntity {
     const userDTO = {
       id: this.id,
       username: this.username,
-      firstName: this.firstName,
-      lastName: this.lastName,
+      name: this.name,
+      balance: this.balance,
+      stocks: this.stocks,
     };
     return userDTO;
   }

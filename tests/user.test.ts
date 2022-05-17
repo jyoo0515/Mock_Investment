@@ -2,12 +2,12 @@ import { DataSource } from 'typeorm';
 import request from 'supertest';
 import app from '../src/app';
 import User from '../src/entity/user.entity';
+import Stock from '../src/entity/stock.entity';
 
 interface userCreateDTO {
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
 }
 
 interface userLoginDTO {
@@ -20,7 +20,7 @@ beforeAll(async () => {
     type: 'sqlite',
     database: ':memory:',
     dropSchema: true,
-    entities: [User],
+    entities: [User, Stock],
     synchronize: true,
     logging: false,
   });
@@ -49,12 +49,11 @@ describe('[POST] /api/users/register', () => {
     const userData: userCreateDTO = {
       username: 'test',
       password: 'test',
-      firstName: 'John',
-      lastName: 'Doe',
+      name: 'John Doe',
     };
     const res = await request(app).post('/api/users/register').send(userData);
     expect(res.status).toBe(201);
-    expect(res.body).toEqual({ id: 1, username: 'test', firstName: 'John', lastName: 'Doe' });
+    expect(res.body).toEqual({ id: 1, username: 'test', name: 'John Doe', balance: 1000 });
   });
 });
 
@@ -100,7 +99,7 @@ describe('Endpoints after login', () => {
   describe('[GET] /api/users/me', () => {
     test('should return logged in user info', async () => {
       const res = await agent.get('/api/users/me');
-      expect(res.body).toEqual({ id: 1, username: 'test', firstName: 'John', lastName: 'Doe' });
+      expect(res.body).toEqual({ id: 1, username: 'test', name: 'John Doe', balance: 1000 });
     });
   });
 
@@ -121,10 +120,9 @@ describe('Endpoints after login', () => {
   });
 
   describe('[PUT] /api/users', () => {
-    test('should return message with cod 200', async () => {
+    test('should return message with code 200', async () => {
       const payload = {
-        firstName: 'Jane',
-        lastName: 'Doe',
+        name: 'Jane Doe',
       };
       const res = await agent.put('/api/users').send(payload);
       expect(res.status).toBe(200);
@@ -138,7 +136,7 @@ describe('Endpoints after login', () => {
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
       expect(res.body).toHaveLength(1);
-      expect(res.body[0]).toHaveProperty('firstName', 'Jane');
+      expect(res.body[0]).toHaveProperty('name', 'Jane Doe');
     });
   });
 
