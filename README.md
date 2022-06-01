@@ -20,8 +20,5 @@ stock
 │  ├─ after_deploy.sh
 │  └─ before_deploy.sh
 ├─ src
-├─ tests
-│  ├─ app.test.ts
-│  ├─ stock.test.ts
-│  └─ user.test.ts
+└─ tests
 ```
